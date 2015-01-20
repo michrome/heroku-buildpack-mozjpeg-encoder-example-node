@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang=en>
+<head>
+  <meta charset=utf-8>
+  <title>heroku-buildpack-mozjpeg-encoder-example-node</title>
+</head>
+<body>
+  <% if @images.length: %>
+    <% for image in @images: %>
+      <p><img src="<%= image %>"/></p>
+    <% end %>
+  <% else: %>
+    <p>No images</p>
+  <% end %>
+</body>
+</html>

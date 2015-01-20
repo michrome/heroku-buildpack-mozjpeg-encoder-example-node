@@ -1,0 +1,11 @@
+{
+  "name": "heroku-buildpack-mozjpeg-encoder-example-node",
+  "private": true,
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "coffee-script": "^1.8.0",
+    "eco": "^1.1.0-rc-3"
+  }
+}
