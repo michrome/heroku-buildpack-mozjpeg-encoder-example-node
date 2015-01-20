@@ -6,19 +6,22 @@ url = require 'url'
 
 port = process.env.PORT || 5000
 jpegs_dir = path.normalize('./images')
+jpeg_regex = /.(jpe?g)$/i
 
 respond_with_index_or_jpeg = (req, res) ->
   request_path = url.parse(req.url, true).pathname
   if request_path == '/'
     respond_with_index(res)
-  else
+  else if request_path.match jpeg_regex
     respond_with_jpeg(res, request_path)
+  else
+    respond_with_404(res)
 
 respond_with_index = (res) ->
-    template = fs.readFileSync(path.join(__dirname, 'index.html.eco'), 'utf-8')
-    res.writeHead 200,
-      'Content-Type': 'text/html'
-    res.end eco.render(template, images: jpeg_files_in_dir(jpegs_dir))
+  template = fs.readFileSync(path.join(__dirname, 'index.html.eco'), 'utf-8')
+  res.writeHead 200,
+    'Content-Type': 'text/html'
+  res.end eco.render(template, images: jpeg_files_in_dir(jpegs_dir))
 
 respond_with_jpeg = (res, request_path) ->
   decoded_request_path = decodeURI(request_path)
@@ -30,9 +33,13 @@ respond_with_jpeg = (res, request_path) ->
     'Content-Type': 'image/jpeg'
   res.end(jpeg_file, 'binary')
 
+respond_with_404 = (res) ->
+  res.statusCode = 404
+  res.end()
+
 jpeg_files_in_dir = (dir) ->
   all_files_in_dir = fs.readdirSync(dir)
-  all_files_in_dir.filter (file) -> file.match /.(jpe?g)$/i
+  all_files_in_dir.filter (file) -> file.match jpeg_regex
 
 server = http.createServer().listen(port, '0.0.0.0')
 server.on('request', respond_with_index_or_jpeg)
